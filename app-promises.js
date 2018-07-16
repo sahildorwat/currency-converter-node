@@ -13,5 +13,43 @@ const getUser = (id) => {
     })
 } 
 
+getStatus = (userId) => {
+    let user;
+    return getUser(userId).then( (tempUser) => {
+        user = tempUser;
+        return getGrades(user.schoolId).then((grades) => {
+            let average = 0;
+            if(grades.length > 0){
+                average = grades.map( (grade ) => grade.grade ).reduce((a,b) => a + b) / grades.length;  
+            }
+            return `${user.name} has a ${average} % in the class`;
+        })
+    })
+}
 
-getUser(1).then(user => console.log(user)).catch(e => console.log(e) )
+const getStatusAlt = async (userId) => {
+    const user = await getUser(userId)
+    const grades = await getGrades(user.schoolId)
+    let average = 0;
+    if(grades.length > 0){
+        average = grades.map( (grade ) => grade.grade ).reduce((a,b) => a + b) / grades.length;  
+    }
+    return `${user.name} has a ${average} % in the class`;
+}
+
+getStatusAlt(3).then(ele => console.log(ele)).catch(e => console.log(e))
+
+getGrades = (schoolId) => {
+    return new Promise((resolve, reject) => {
+        resolve(grades.filter((grade) => {
+            if(grade.schoolId === schoolId) {
+                return grade.grade
+            }
+            
+        }))
+    })
+}
+
+// getStatus(1).then(a => console.log(a))
+// getGrades(101).then(g => console.log(g))
+// getUser(2).then(user => console.log(user)).catch(e => console.log(e) )
